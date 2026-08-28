@@ -1,0 +1,39 @@
+# OS artifacts
+.DS_Store
+**/.DS_Store
+Thumbs.db
+
+# Databricks
+.databricks/
+**/.databricks/
+
+# Antigravity / Gemini CLI
+.gemini/
+**/.gemini/
+
+# Python
+__pycache__/
+**/__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+**/.venv/
+env/
+venv/
+*.egg-info/
+dist/
+build/
+
+# Node / Frontend
+node_modules/
+**/node_modules/
+client/dist/
+**/dist/
+.smoke-test/
+test-results/
+playwright-report/
+
+# Secrets & Environment variables
+.env
+**/.env
+.env*.local

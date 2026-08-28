@@ -1,0 +1,146 @@
+{
+  "version": 2,
+  "config": {
+    "sample_questions": [
+      {
+        "id": "4bb23f3b453d74473e95bf4778cc9c05",
+        "question": [
+          "Quantas ligações já foram registradas e quantas viraram pedido?"
+        ]
+      },
+      {
+        "id": "601b578ae26c1bd1bba80d8e05bc006d",
+        "question": [
+          "Quais são os 10 clientes com maior score de propensão fora da fila?"
+        ]
+      },
+      {
+        "id": "dcd85e98fc9a9655fe98b077b1111af6",
+        "question": [
+          "Quem eu ligo essa semana?"
+        ]
+      },
+      {
+        "id": "eb649440639a7eb7e565c17d43d06f82",
+        "question": [
+          "O modelo é bom?"
+        ]
+      },
+      {
+        "id": "fb810aaffbd96f8f50739be7f04b6e8c",
+        "question": [
+          "Quanto vale a fila desta semana?"
+        ]
+      }
+    ]
+  },
+  "benchmarks": {
+    "questions": [
+      {
+        "id": "2ccde7e575d044749c1c15cdde04efb4",
+        "question": [
+          "Quanto vale a fila desta semana?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT ROUND(SUM(score * ticket_medio), 2) AS receita_esperada FROM lakehouse_rotaperfume.gold.fila_semanal;"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "5b0ce7aec7decc06a4ed811b70efbdc9",
+        "question": [
+          "O modelo é bom?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT lift_top200, acertos_top200, taxa_base FROM lakehouse_rotaperfume.gold.modelo_metricas ORDER BY _treinado_em DESC LIMIT 1;"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "9dc0e457cd047ea90e14e4dce12f3230",
+        "question": [
+          "Quantas ligações já foram registradas e quantas viraram pedido?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT COUNT(*) AS total_ligacoes, COUNT(CASE WHEN status = 'vendeu' THEN 1 END) AS viraram_pedido FROM lakehouse_rotaperfume.gold.retorno_ligacao;"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "b4e055434a87b1d25ed1bb14635bdf67",
+        "question": [
+          "Quem eu ligo essa semana?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT vendedor, ordem, razao_social, cidade, uf, score, faixa, motivo, sugestao FROM lakehouse_rotaperfume.gold.fila_semanal ORDER BY vendedor, ordem;"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "d1e8c25e53f7e8a4339b5cb21d9dc471",
+        "question": [
+          "Quais são os 10 clientes com maior score de propensão fora da fila?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT s.cliente_id, c.razao_social, s.score, s.faixa FROM lakehouse_rotaperfume.gold.score_propensao s JOIN lakehouse_rotaperfume.gold.dim_cliente c ON s.cliente_id = c.cliente_id LEFT JOIN lakehouse_rotaperfume.gold.fila_semanal f ON s.cliente_id = f.cliente_id WHERE f.cliente_id IS NULL ORDER BY s.score DESC LIMIT 10;"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "data_sources": {
+    "tables": [
+      {
+        "identifier": "lakehouse_rotaperfume.gold.clientes_em_risco"
+      },
+      {
+        "identifier": "lakehouse_rotaperfume.gold.fila_semanal"
+      },
+      {
+        "identifier": "lakehouse_rotaperfume.gold.modelo_metricas"
+      },
+      {
+        "identifier": "lakehouse_rotaperfume.gold.ranking_marcas"
+      },
+      {
+        "identifier": "lakehouse_rotaperfume.gold.receita_mensal"
+      },
+      {
+        "identifier": "lakehouse_rotaperfume.gold.retorno_ligacao"
+      },
+      {
+        "identifier": "lakehouse_rotaperfume.gold.score_propensao"
+      }
+    ]
+  },
+  "instructions": {
+    "text_instructions": [
+      {
+        "id": "6fac688a2aca45f729c6f57409f888c6",
+        "content": [
+          "Este espaço foi desenhado exclusivamente para a DIREÇÃO COMERCIAL, que decide estratégias de abordagem e não escreve SQL.\n1. A tabela principal de consulta é gold.fila_semanal, contendo os 200 clientes priorizados para contato na semana.\n2. A fila semanal é GLOBAL e não dividida por cota fixa de vendedor: quem tem carteira mais aquecida recebe mais contatos, o que maximiza o retorno comercial da empresa.\n3. O score (de 0 a 1) representa a probabilidade de o cliente realizar pedido nos próximos 7 dias. A coluna faixa categoriza a temperatura e motivo explica a razão em português.\n4. A receita esperada da fila é calculada por SUM(score * ticket_medio) e é sempre uma ESTIMATIVA comercial, nunca receita realizada.\n5. A métrica de avaliação do modelo para a direção é lift_top200 (ex: 4,25x sobre a taxa base) ou acertos_top200 (ex: 86 de 200). NUNCA cite AUC para responder perguntas de negócio: AUC é métrica técnica de treino de engenheiros de ML.\n6. A tabela gold.retorno_ligacao começa VAZIA e é alimentada pelos vendedores. Se o número de registros for zero, informe claramente que ninguém registrou retorno ainda; nunca invente números nem trate a fila como retorno.\n7. Um cliente pode possuir múltiplos registros em gold.retorno_ligacao: para obter o status atual, selecione sempre o registro mais recente por registrado_em.\n8. A sazonalidade de vendas no setor é INVERTIDA: o pico de compras pelos lojistas ocorre no mês ANTERIOR à respectiva data comemorativa.\n9. Nunca utilize nem consulte o schema bronze.\n10. Utilize sempre e somente as tabelas autorizadas deste espaço no Unity Catalog."
+        ]
+      }
+    ]
+  }
+}

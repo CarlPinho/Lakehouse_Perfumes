@@ -1,0 +1,61 @@
+{
+  "version": 2,
+  "config": {
+    "sample_questions": [
+      {
+        "id": "1d7e212242e8497b853b886d0d47f1cd",
+        "question": [
+          "Quem eu ligo essa semana?"
+        ]
+      },
+      {
+        "id": "fbf29234048f4bada992ec015534a031",
+        "question": [
+          "Quais são os 10 clientes com maior score de propensão?"
+        ]
+      },
+      {
+        "id": "6f90e6438b6747268192c33d1a6e6d41",
+        "question": [
+          "Quais clientes estão com atraso relativo acima de 1.5?"
+        ]
+      }
+    ]
+  },
+  "data_sources": {
+    "tables": [
+      {
+        "identifier": "lakehouse_rotaperfume.gold.dim_cliente"
+      },
+      {
+        "identifier": "lakehouse_rotaperfume.gold.dim_produto"
+      },
+      {
+        "identifier": "lakehouse_rotaperfume.gold.fato_vendas"
+      },
+      {
+        "identifier": "lakehouse_rotaperfume.gold.features_cliente"
+      },
+      {
+        "identifier": "lakehouse_rotaperfume.gold.fila_semanal"
+      },
+      {
+        "identifier": "lakehouse_rotaperfume.gold.score_propensao"
+      }
+    ]
+  },
+  "instructions": {
+    "text_instructions": [
+      {
+        "id": "1f0bce3ffb7b4bc9b8640632693f2383",
+        "content": [
+          "Use sempre as tabelas e funções deste espaço. Nunca invente número, nome de cliente ou quantidade de estoque.\n",
+          "Para saber para quem ligar na semana, consulte sempre gold.fila_semanal ou a função gold.priorizar_carteira.\n",
+          "A coluna score representa a probabilidade de compra na semana calculada pelo modelo de ML.\n",
+          "A coluna motivo explica a razão comercial da abordagem para cada cliente.\n",
+          "A coluna sugestao indica o produto recomendado com o saldo atual em estoque."
+        ]
+      }
+    ]
+  }
+}

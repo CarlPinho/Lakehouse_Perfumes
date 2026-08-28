@@ -1,0 +1,28 @@
+# ==============================================================================
+# Recursos do Unity Catalog - Schemas e Volumes (IaC)
+# ==============================================================================
+
+resources:
+  schemas:
+    bronze:
+      name: bronze
+      catalog_name: ${var.catalog}
+      comment: "Camada Bronze: dados brutos preservados, append-only, com metadados técnicos de ingestão."
+
+    silver:
+      name: silver
+      catalog_name: ${var.catalog}
+      comment: "Camada Silver: dados limpos, tipados, deduplicados e enriquecidos com regras de negócio."
+
+    gold:
+      name: gold
+      catalog_name: ${var.catalog}
+      comment: "Camada Gold: marts analíticos, agregações de negócio e métricas prontas para consumo."
+
+  volumes:
+    raw:
+      name: raw
+      catalog_name: ${var.catalog}
+      schema_name: bronze
+      volume_type: MANAGED
+      comment: "Volume gerenciado para arquivos brutos de entrada (ERP e CRM)."

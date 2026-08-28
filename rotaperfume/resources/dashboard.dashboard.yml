@@ -1,0 +1,12 @@
+# ==============================================================================
+# Dashboard Comercial AI/BI (Lakeview) como Código
+# ==============================================================================
+
+resources:
+  dashboards:
+    dashboard_comercial:
+      display_name: "Rota Perfume - Visão Comercial"
+      file_path: ./dashboard-comercial.lvdash.json
+      warehouse_id: ${var.warehouse_id}
+      dataset_catalog: ${var.catalog}
+      dataset_schema: gold

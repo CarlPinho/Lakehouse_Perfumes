@@ -22,4 +22,5 @@ If the CLI is not installed, see: https://docs.databricks.com/dev-tools/cli/inst
 
 ## Project Instructions
 
-<!-- Add your project-specific instructions, coding conventions, or notes here -->
+As diretrizes arquiteturais, padrões de código PySpark, Medallion e comandos de deploy estão centralizados em [GEMINI.md](file:///Users/carlospinho/Desktop/Lakehouse_Perfumes/GEMINI.md).
+

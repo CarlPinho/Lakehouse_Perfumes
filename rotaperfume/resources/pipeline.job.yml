@@ -1,0 +1,141 @@
+# ==============================================================================
+# Job: rotaperfume_pipeline
+#
+# Roadmap de Evolução do Job nas Próximas Entregas:
+# ------------------------------------------------------------------------------
+# [Entrega 1] raw_conferencia (Conferência de integridade e chegada dos arquivos no Volume)
+# [Entrega 2] bronze_ingestao (Ingestão Raw -> 10 Tabelas Delta Bronze)
+# [Entrega 3] silver_transformacao (4 tarefas SQL paralelas: Limpeza, Tipagem e Contratos)
+# [Entrega 4 - Hoje] gold_marts (Dimensões, Fato Vendas, 3 Data Marts e 9 Testes automatizados)
+#
+# [Entregas Futuras]
+#   └── [Entrega 5-6] qualidade_dados & monitoramento contínuo
+# ==============================================================================
+
+resources:
+  jobs:
+    rotaperfume_pipeline:
+      name: rotaperfume_pipeline
+      schedule:
+        quartz_cron_expression: "0 0 6 * * ?"
+        timezone_id: America/Sao_Paulo
+      tasks:
+        - task_key: raw_conferencia
+          notebook_task:
+            notebook_path: ../src/raw/conferencia.py
+            base_parameters:
+              catalog: ${var.catalog}
+
+        - task_key: bronze_ingestao
+          depends_on:
+            - task_key: raw_conferencia
+          notebook_task:
+            notebook_path: ../src/bronze/ingestao.py
+            base_parameters:
+              catalog: ${var.catalog}
+
+        - task_key: silver_clientes
+          depends_on:
+            - task_key: bronze_ingestao
+          sql_task:
+            warehouse_id: ${var.warehouse_id}
+            file:
+              path: ../src/silver/01-clientes.sql
+
+        - task_key: silver_pedidos
+          depends_on:
+            - task_key: bronze_ingestao
+          sql_task:
+            warehouse_id: ${var.warehouse_id}
+            file:
+              path: ../src/silver/02-pedidos.sql
+
+        - task_key: silver_itens_produtos
+          depends_on:
+            - task_key: bronze_ingestao
+          sql_task:
+            warehouse_id: ${var.warehouse_id}
+            file:
+              path: ../src/silver/03-itens-e-produtos.sql
+
+        - task_key: silver_crm_financeiro
+          depends_on:
+            - task_key: bronze_ingestao
+          sql_task:
+            warehouse_id: ${var.warehouse_id}
+            file:
+              path: ../src/silver/04-crm-e-financeiro.sql
+
+        - task_key: gold_dimensoes
+          depends_on:
+            - task_key: silver_clientes
+            - task_key: silver_pedidos
+            - task_key: silver_itens_produtos
+            - task_key: silver_crm_financeiro
+          sql_task:
+            warehouse_id: ${var.warehouse_id}
+            file:
+              path: ../src/gold/05-dimensoes.sql
+
+        - task_key: gold_fato_vendas
+          depends_on:
+            - task_key: gold_dimensoes
+          sql_task:
+            warehouse_id: ${var.warehouse_id}
+            file:
+              path: ../src/gold/06-fato-vendas.sql
+
+        - task_key: gold_marts
+          depends_on:
+            - task_key: gold_fato_vendas
+          sql_task:
+            warehouse_id: ${var.warehouse_id}
+            file:
+              path: ../src/gold/07-marts.sql
+
+        - task_key: gold_retorno_ligacao
+          depends_on:
+            - task_key: gold_marts
+          sql_task:
+            warehouse_id: ${var.warehouse_id}
+            file:
+              path: ../src/gold/11-retorno-ligacao.sql
+
+        - task_key: testes
+          depends_on:
+            - task_key: gold_retorno_ligacao
+          sql_task:
+            warehouse_id: ${var.warehouse_id}
+            file:
+              path: ../src/gold/08-testes.sql
+
+
+        - task_key: ml_features
+          depends_on:
+            - task_key: testes
+          notebook_task:
+            notebook_path: ../src/ml/11-features.py
+            base_parameters:
+              catalog: ${var.catalog}
+
+        - task_key: ml_modelo
+          depends_on:
+            - task_key: ml_features
+          notebook_task:
+            notebook_path: ../src/ml/12-modelo.py
+            base_parameters:
+              catalog: ${var.catalog}
+
+        - task_key: ml_fila
+          depends_on:
+            - task_key: ml_modelo
+          sql_task:
+            warehouse_id: ${var.warehouse_id}
+            file:
+              path: ../src/ml/13-fila.sql
+
+
+
+
+
+

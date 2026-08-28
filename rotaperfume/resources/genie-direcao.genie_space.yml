@@ -1,0 +1,7 @@
+resources:
+  genie_spaces:
+    genie_direcao:
+      title: "Rota do Perfume · Direção"
+      warehouse_id: ${var.warehouse_id}
+      file_path: ./direcao.geniespace.json
+      description: "Espaço AI/BI Genie para a direção comercial acompanhar a fila semanal, retornos de ligações e métricas de propensão"
