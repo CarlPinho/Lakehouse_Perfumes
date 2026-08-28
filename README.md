@@ -1,4 +1,4 @@
-# 🧭 Imersão Jornada de Dados · Rota do Perfume
+# · Rota do Perfume
 
 Construir a área de dados e vendas de uma distribuidora B2B **do zero, em 4 noites**.
 Empresa fictícia, dado gerado com seed fixa, sujeira proposital.
