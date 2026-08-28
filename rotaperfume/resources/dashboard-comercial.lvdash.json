@@ -45,6 +45,28 @@
         "SELECT vendedor, ordem, cliente_id, razao_social, cidade, uf, ",
         "score, faixa, ticket_medio, motivo, sugestao ",
         "FROM fila_semanal\n"
+      ],
+      "columns": [
+        {
+          "displayName": "Total Clientes",
+          "description": "Total de contatos na fila semanal",
+          "expression": "COUNT(*)"
+        },
+        {
+          "displayName": "Receita Esperada",
+          "description": "Receita potencial calculada pelo modelo: SUM(score * ticket_medio)",
+          "expression": "SUM(`score` * `ticket_medio`)"
+        },
+        {
+          "displayName": "Ticket Médio Fila",
+          "description": "Ticket médio médio dos clientes selecionados",
+          "expression": "AVG(`ticket_medio`)"
+        },
+        {
+          "displayName": "Vendedores Alocados",
+          "description": "Total de vendedores com carteira na fila",
+          "expression": "COUNT(DISTINCT `vendedor`)"
+        }
       ]
     }
   ],
@@ -58,10 +80,11 @@
       "layout": [
         {
           "widget": {
-            "name": "dashboard_title",
+            "name": "dashboard_header",
             "multilineTextboxSpec": {
               "lines": [
-                "## Rota Perfume — Performance Comercial e Margens de Venda"
+                "# 🌸 Rota do Perfume · Performance Comercial & Rentabilidade",
+                "Painel Executivo de Faturamento Líquido, Margens por Categoria e Eficiência dos Canais B2B"
               ]
             }
           },
@@ -69,23 +92,7 @@
             "x": 0,
             "y": 0,
             "width": 12,
-            "height": 1
-          }
-        },
-        {
-          "widget": {
-            "name": "dashboard_subtitle",
-            "multilineTextboxSpec": {
-              "lines": [
-                "Painel analítico integrado de faturamento, rentabilidade por categoria de produto e eficiência de canais."
-              ]
-            }
-          },
-          "position": {
-            "x": 0,
-            "y": 1,
-            "width": 12,
-            "height": 1
+            "height": 2
           }
         },
         {
@@ -163,7 +170,7 @@
               },
               "frame": {
                 "showTitle": true,
-                "title": "Segmento"
+                "title": "Segmento de Cliente"
               }
             }
           },
@@ -206,7 +213,7 @@
               },
               "frame": {
                 "showTitle": true,
-                "title": "Cidade"
+                "title": "Praça / Cidade"
               }
             }
           },
@@ -255,7 +262,9 @@
               },
               "frame": {
                 "showTitle": true,
-                "title": "Receita Líquida Total"
+                "title": "Receita Líquida Total",
+                "showDescription": true,
+                "description": "Faturamento acumulado das vendas"
               }
             }
           },
@@ -304,7 +313,9 @@
               },
               "frame": {
                 "showTitle": true,
-                "title": "Margem de Contribuição"
+                "title": "Margem de Contribuição",
+                "showDescription": true,
+                "description": "Lucro bruto após dedução dos custos"
               }
             }
           },
@@ -348,7 +359,9 @@
               },
               "frame": {
                 "showTitle": true,
-                "title": "Total de Pedidos"
+                "title": "Total de Pedidos",
+                "showDescription": true,
+                "description": "Volume de pedidos faturados"
               }
             }
           },
@@ -396,7 +409,9 @@
               },
               "frame": {
                 "showTitle": true,
-                "title": "Ticket Médio"
+                "title": "Ticket Médio por Pedido",
+                "showDescription": true,
+                "description": "Valor médio por venda faturada"
               }
             }
           },
@@ -437,18 +452,18 @@
             ],
             "spec": {
               "version": 3,
-              "widgetType": "line",
+              "widgetType": "area",
               "encodings": {
                 "x": {
                   "fieldName": "monthly(data_pedido)",
-                  "displayName": "Mês",
+                  "displayName": "Mês do Pedido",
                   "scale": {
                     "type": "temporal"
                   }
                 },
                 "y": {
                   "fieldName": "measure(Receita)",
-                  "displayName": "Receita (R$)",
+                  "displayName": "Receita Líquida (R$)",
                   "scale": {
                     "type": "quantitative"
                   },
@@ -461,7 +476,9 @@
               },
               "frame": {
                 "showTitle": true,
-                "title": "Evolução Mensal da Receita (24 Meses)"
+                "title": "Evolução Mensal da Receita Líquida (24 Meses)",
+                "showDescription": true,
+                "description": "Tendência histórica de faturamento com sazonalidade e picos de demanda"
               }
             }
           },
@@ -506,7 +523,7 @@
               "encodings": {
                 "x": {
                   "fieldName": "canal",
-                  "displayName": "Canal",
+                  "displayName": "Canal de Venda",
                   "scale": {
                     "type": "categorical",
                     "sort": {
@@ -516,7 +533,7 @@
                 },
                 "y": {
                   "fieldName": "measure(Receita)",
-                  "displayName": "Receita (R$)",
+                  "displayName": "Receita Líquida (R$)",
                   "scale": {
                     "type": "quantitative"
                   },
@@ -529,7 +546,9 @@
               },
               "frame": {
                 "showTitle": true,
-                "title": "Receita por Canal de Venda"
+                "title": "Receita por Canal de Distribuição",
+                "showDescription": true,
+                "description": "Representatividade dos canais Farmácia, Perfumaria e Loja"
               }
             }
           },
@@ -584,7 +603,7 @@
                 },
                 "y": {
                   "fieldName": "measure(Receita)",
-                  "displayName": "Receita (R$)",
+                  "displayName": "Receita Líquida (R$)",
                   "scale": {
                     "type": "quantitative"
                   },
@@ -597,7 +616,9 @@
               },
               "frame": {
                 "showTitle": true,
-                "title": "Top 10 Marcas por Receita"
+                "title": "Top 10 Marcas por Receita Líquida",
+                "showDescription": true,
+                "description": "Marcas líderes de faturamento no portfólio"
               }
             }
           },
@@ -749,7 +770,9 @@
               },
               "frame": {
                 "showTitle": true,
-                "title": "Top Clientes por Faturamento Líquido"
+                "title": "Top Clientes por Faturamento Líquido",
+                "showDescription": true,
+                "description": "Ranking dos clientes mais representativos na receita da distribuidora"
               }
             }
           },
@@ -770,10 +793,11 @@
       "layout": [
         {
           "widget": {
-            "name": "fila_title",
+            "name": "fila_header",
             "multilineTextboxSpec": {
               "lines": [
-                "## Rota Perfume — Fila Semanal de Priorização Comercial"
+                "# 🎯 Fila Semanal de Priorização Comercial",
+                "Lista dos 200 clientes com maior propensão de compra nos próximos 7 dias — Modelo Gradient Boosting com validação de estoque"
               ]
             }
           },
@@ -781,23 +805,7 @@
             "x": 0,
             "y": 0,
             "width": 12,
-            "height": 1
-          }
-        },
-        {
-          "widget": {
-            "name": "fila_subtitle",
-            "multilineTextboxSpec": {
-              "lines": [
-                "Lista dos 200 clientes priorizados pelo modelo de propensão semanal com motivo explicativo em linguagem natural e recomendação personalizada."
-              ]
-            }
-          },
-          "position": {
-            "x": 0,
-            "y": 1,
-            "width": 12,
-            "height": 1
+            "height": 2
           }
         },
         {
@@ -918,7 +926,7 @@
               },
               "frame": {
                 "showTitle": true,
-                "title": "Cidade"
+                "title": "Cidade / Região"
               }
             }
           },
@@ -931,7 +939,7 @@
         },
         {
           "widget": {
-            "name": "table_fila_semanal",
+            "name": "kpi_fila_contatos",
             "queries": [
               {
                 "name": "main_query",
@@ -939,9 +947,196 @@
                   "datasetName": "ds_fila_semanal",
                   "fields": [
                     {
-                      "name": "vendedor",
-                      "expression": "`vendedor`"
-                    },
+                      "name": "measure(Total Clientes)",
+                      "expression": "MEASURE(`Total Clientes`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "measure(Total Clientes)",
+                  "displayName": "Clientes na Fila",
+                  "format": {
+                    "type": "number-plain"
+                  }
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Clientes na Fila",
+                "showDescription": true,
+                "description": "Total de contatos prioritários selecionados"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 4,
+            "width": 3,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "kpi_fila_receita",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "ds_fila_semanal",
+                  "fields": [
+                    {
+                      "name": "measure(Receita Esperada)",
+                      "expression": "MEASURE(`Receita Esperada`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "measure(Receita Esperada)",
+                  "displayName": "Receita Esperada",
+                  "format": {
+                    "type": "number-currency",
+                    "currencyCode": "BRL",
+                    "abbreviation": "compact",
+                    "decimalPlaces": {
+                      "type": "max",
+                      "places": 2
+                    }
+                  }
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Receita Esperada",
+                "showDescription": true,
+                "description": "Estimativa: SUM(score × ticket médio)"
+              }
+            }
+          },
+          "position": {
+            "x": 3,
+            "y": 4,
+            "width": 3,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "kpi_fila_ticket",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "ds_fila_semanal",
+                  "fields": [
+                    {
+                      "name": "measure(Ticket Médio Fila)",
+                      "expression": "MEASURE(`Ticket Médio Fila`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "measure(Ticket Médio Fila)",
+                  "displayName": "Ticket Médio",
+                  "format": {
+                    "type": "number-currency",
+                    "currencyCode": "BRL",
+                    "decimalPlaces": {
+                      "type": "max",
+                      "places": 2
+                    }
+                  }
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Ticket Médio",
+                "showDescription": true,
+                "description": "Média de valor de compra dos priorizados"
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 4,
+            "width": 3,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "kpi_fila_vendedores",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "ds_fila_semanal",
+                  "fields": [
+                    {
+                      "name": "measure(Vendedores Alocados)",
+                      "expression": "MEASURE(`Vendedores Alocados`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "measure(Vendedores Alocados)",
+                  "displayName": "Vendedores",
+                  "format": {
+                    "type": "number-plain"
+                  }
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Vendedores Alocados",
+                "showDescription": true,
+                "description": "Carteiras comerciais com contatos na fila"
+              }
+            }
+          },
+          "position": {
+            "x": 9,
+            "y": 4,
+            "width": 3,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "table_fila_semanal",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "ds_fila_semanal",
+                  "fields": [
                     {
                       "name": "ordem",
                       "expression": "`ordem`"
@@ -959,12 +1154,20 @@
                       "expression": "`uf`"
                     },
                     {
+                      "name": "vendedor",
+                      "expression": "`vendedor`"
+                    },
+                    {
                       "name": "score",
                       "expression": "`score`"
                     },
                     {
                       "name": "faixa",
                       "expression": "`faixa`"
+                    },
+                    {
+                      "name": "ticket_medio",
+                      "expression": "`ticket_medio`"
                     },
                     {
                       "name": "motivo",
@@ -1007,8 +1210,12 @@
                     "displayName": "UF"
                   },
                   {
+                    "fieldName": "vendedor",
+                    "displayName": "Vendedor"
+                  },
+                  {
                     "fieldName": "score",
-                    "displayName": "Nota (Score)",
+                    "displayName": "Chance",
                     "format": {
                       "type": "number-percent",
                       "decimalPlaces": {
@@ -1022,24 +1229,38 @@
                     "displayName": "Faixa"
                   },
                   {
+                    "fieldName": "ticket_medio",
+                    "displayName": "Ticket Médio",
+                    "format": {
+                      "type": "number-currency",
+                      "currencyCode": "BRL",
+                      "decimalPlaces": {
+                        "type": "max",
+                        "places": 0
+                      }
+                    }
+                  },
+                  {
                     "fieldName": "motivo",
                     "displayName": "Motivo da Abordagem"
                   },
                   {
                     "fieldName": "sugestao",
-                    "displayName": "Sugestão de Oferta (com Saldo)"
+                    "displayName": "Sugestão com Estoque"
                   }
                 ]
               },
               "frame": {
                 "showTitle": true,
-                "title": "Fila Semanal de Priorização Comercial (200 Melhores Clientes)"
+                "title": "Fila Semanal de Priorização Comercial (200 Melhores Clientes)",
+                "showDescription": true,
+                "description": "Lista ordenada por probabilidade de compra com argumento comercial e produto disponível"
               }
             }
           },
           "position": {
             "x": 0,
-            "y": 4,
+            "y": 7,
             "width": 12,
             "height": 18
           }
@@ -1051,32 +1272,32 @@
   "uiSettings": {
     "theme": {
       "canvasBackgroundColor": {
-        "light": "#F8F9FA",
-        "dark": "#181E24"
+        "light": "#F8FAFC",
+        "dark": "#0F172A"
       },
       "widgetBackgroundColor": {
         "light": "#FFFFFF",
-        "dark": "#222B32"
+        "dark": "#1E293B"
       },
       "fontColor": {
-        "light": "#1A202C",
-        "dark": "#EDF2F7"
+        "light": "#0F172A",
+        "dark": "#F8FAFC"
       },
       "selectionColor": {
-        "light": "#6B46C1",
-        "dark": "#9F7AEA"
+        "light": "#0D9488",
+        "dark": "#2DD4BF"
       },
       "visualizationColors": [
-        "#6B46C1",
-        "#319795",
-        "#3182CE",
-        "#DD6B20",
-        "#D53F8C",
-        "#38A169",
-        "#805AD5",
-        "#E53E3E",
-        "#D69E2E",
-        "#4A5568"
+        "#0D9488",
+        "#6366F1",
+        "#F59E0B",
+        "#EC4899",
+        "#3B82F6",
+        "#10B981",
+        "#8B5CF6",
+        "#EF4444",
+        "#14B8A6",
+        "#64748B"
       ],
       "widgetHeaderAlignment": "LEFT"
     }
